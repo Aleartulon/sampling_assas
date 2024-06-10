@@ -1,7 +1,0 @@
-#begin INST
-   dt = 0.
-   tsat = BASE.'SENSOR'('T_SAT').value
-   tmean = BASE.'SENSOR'('T_MEAN').value
-   dt = tsat - tmean
-   dt
-#end

@@ -1,8 +1,0 @@
-#begin INST
-   cboucle = CHAR(SENSOR.'NAME'[0])
-   perc = 0.
-   srvname = WORD('PUGCTA'//cboucle)
-   perc = BASE.'SENSOR'(srvname).value
-   perc = perc* 100.
-   perc
-#end

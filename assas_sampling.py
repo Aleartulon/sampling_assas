@@ -1,23 +1,22 @@
-import json
 import os
 import numpy as np
 import shutil
 from scipy.stats import uniform
-from pyDOE import lhs  # https://pythonhosted.org/pyDOE/randomized.html#latin-hypercube
+from pyDOE import lhs 
 
+#dictionary with necessary specifications is given
 config_data = {
-"path to scenario": "ASSAS_DATASETS_240329/PWR1300-LIKE_ASSAS/STUDY/TRANSIENT/BASE_SIMPLIFIED/SBO/SBO_feedbleed/SBO_fb_1300_LIKE_SIMPLIFIED_ASSAS.mdat",
+"path to scenario": "SBO_fb_1300_LIKE_SIMPLIFIED_ASSAS.mdat",
 "path to ASTEC input": "inputs_directory/",
 "sampling algorithm": "LHS",
-"number of samples": 5,
+"number of samples": 20,
 "uncertain input parameters": [
-{"name": "tpesp", "distribution": "uniform", "min": 2.0, "max": 3.0},
-{"name": "t_fbseb", "distribution": "uniform", "min": 10.0, "max": 11.0},
-{"name": "fr", "distribution": "uniform", "min": 1.2, "max": 11.0}
+{"name": "tpesp", "distribution": "uniform", "min": 13000.0, "max": 20000.0},
+{"name": "t_fbseb", "distribution": "uniform", "min": 12040.0, "max": 20050.0}
+
 ],
 "certain input parameters": [
-{"name": "one", "value": 5.},
-{"name": "two", "value": 6.},
+    {"name": "tpessg", "value" : 20000.}
 ]
 }
 
@@ -57,10 +56,14 @@ for param in config_data["certain input parameters"]:
 
 
 # preparing the ASTEC input decks
+#BE CAREFUL TO NOT OVERWRITE EXISTING DIRECTORIES!!!
+
 filename = os.path.basename(config_data["path to scenario"])
 for sample_i in range(samples_num):
-#     # inside the main output folder create the folder for sample
+    if os.path.exists(config_data["path to ASTEC input"] + "/Sample_"+str(sample_i)):
+        shutil.rmtree(config_data["path to ASTEC input"] + "/Sample_"+str(sample_i))
     os.makedirs(config_data["path to ASTEC input"] + "/Sample_"+str(sample_i).format(sample_i), exist_ok=True)
+    
     shutil.copyfile(config_data["path to scenario"], os.path.join(config_data["path to ASTEC input"] + "/Sample_"+str(sample_i), filename))
 
     for param in range(uncertain_parameters_num + certain_parameters_num):

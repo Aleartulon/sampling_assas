@@ -1,2 +1,0 @@
-CALL "param.dat"
-CALL "../restart.dat"
