@@ -4,7 +4,9 @@
 
 A code for sampling operator actions for the ASTEC code. The operator actions are sampled using the Latin hypercube sampling method with uniform distributions.
 
-Two main paths must be specified in config_data:
+This code generates a series on input decks stored inside a series of directories "Sample_i/". The only code to be run is "assas_sampling.py".
+
+Two main paths must be specified in config_data inside "assas_sampling.py":
 - "path to scenario", which specifies the path to the .mdat file which will be copied in all the directories which will contain the generated input decks.
 - "path to ASTEC input", which specifies where the generated input decks will be saved.
 
