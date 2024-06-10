@@ -11,9 +11,12 @@ config_data = {
 "sampling algorithm": "LHS",
 "number of samples": 5,
 "uncertain input parameters": [
-{"name": "tpesp", "distribution": "uniform", "min": 2.0, "max": 3.0, "value": None},
-{"name": "t_fbseb", "distribution": "uniform", "min": 10.0, "max": 11.0, "value": None},
-{"name": "trial", "distribution": "uniform", "min": 10.0, "max": 11.0, "value": 5.}
+{"name": "tpesp", "distribution": "uniform", "min": 2.0, "max": 3.0},
+{"name": "t_fbseb", "distribution": "uniform", "min": 10.0, "max": 11.0},
+],
+"certain input parameters": [
+{"name": "one", "value": 5.},
+{"name": "two", "value": 6.},
 ]
 }
 
@@ -27,9 +30,12 @@ def create_driving_ana_file(dictionary, uncertain_parameters_values, path_to_fil
    #open driving.ana next to .mdat - file.open(path_to_file, file_name)
    with open(path_to_file + "/driving.ana", "w") as file:
     for count, element in enumerate(uncertain_parameters_values):
-        name = dictionary["uncertain input parameters"][count]["name"] + " ="
-        file.write(f"{name} {element}\n")
-
+        if count < uncertain_parameters_num:
+            name = dictionary["uncertain input parameters"][count]["name"] + " ="
+            file.write(f"{name} {element}\n")
+        else:
+            name = dictionary["certain input parameters"][count-uncertain_parameters_num]["name"] + " ="
+            file.write(f"{name} {element}\n")
 
 
 #with open(input_file, 'r') as f:
@@ -39,21 +45,25 @@ def create_driving_ana_file(dictionary, uncertain_parameters_values, path_to_fil
 #        print("Reading JSON failed")
 #        quit(-1)
 
-# sampling
-parameters_num = len(config_data["uncertain input parameters"])
+# sampling uncertain parameters
+uncertain_parameters_num = len(config_data["uncertain input parameters"])
+certain_parameters_num = len(config_data["certain input parameters"])
 samples_num = config_data["number of samples"]
 
-sampled_matrix = np.zeros((samples_num, parameters_num), dtype=float, order='C')
-original_sampling = lhs(parameters_num, samples=samples_num, criterion='center')
+sampled_matrix = np.zeros((samples_num, uncertain_parameters_num), dtype=float, order='C')
+original_sampling = lhs(uncertain_parameters_num, samples=samples_num, criterion='center')
 
-for par_i in range(parameters_num):
+for par_i in range(uncertain_parameters_num):
     current_par = config_data["uncertain input parameters"][par_i]
     pdf_params = current_par["distribution"]
     if pdf_params.lower() == 'uniform':
         sampled_matrix[:, par_i] = rescale_uniform(original_sampling[:, par_i], current_par)
 
-print(sampled_matrix)
 
+# concatenate certain parameters
+for param in config_data["certain input parameters"]:
+    sampled_matrix = np.hstack((sampled_matrix, np.ones((samples_num,1))*param["value"]))
+print(sampled_matrix)
 # preparing the ASTEC input decks
 # create main output folder
 
@@ -63,5 +73,6 @@ for sample_i in range(samples_num):
 #     # copy original input to sample folder
 #     copytree function
 #     create driving.ana file - call create_driving_ana_file function
-    for param in range(parameters_num):
+    for param in range(uncertain_parameters_num + certain_parameters_num):
         create_driving_ana_file(config_data, sampled_matrix[sample_i], config_data["path to ASTEC input"] + "/Sample_"+str(sample_i))
+    
