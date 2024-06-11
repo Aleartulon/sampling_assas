@@ -2,6 +2,26 @@
    sequence = "SBO_fb"                                     !Sequence name
    family   = "SBO"                                        !Family of calculation: used to triggered wanted initiators
    genname  = "SBO_fb_1300_LIKE_SIMPLIFIED_ASSAS"          !Name of calculation
-   IF(1-(ASSIGNED 'path1300')) path1300 = "../../../../.." !Path to PWR1300-LIKE_ASSAS folder
+   IF(1-(ASSIGNED 'path1300')) path1300 = "../../../" !Path to PWR1300-LIKE_ASSAS folder
 #end
-CALL (path1300//"/STUDY/TRANS/trans.dat")
+CALL (path1300//"STUDY/TRANS/trans.dat")
+!CALL ("../../STUDY/TRANS/trans.dat")
+
+#anal
+  DELETE LOCAL 'ALERT' 
+  DELETE LOCAL 'SAVE'
+#end
+
+STRU SAVE
+  FILE (genname//".bin")
+  FORM 'DIRECTOR'
+  FREQ 1000.
+END
+
+
+STRU SAVE
+  FILE (genname//"_filtered.bin")
+  FORM 'DIRZIP'
+  FILT "../../filter.dat"
+  FREQ 200.
+END
