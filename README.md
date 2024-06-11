@@ -17,5 +17,5 @@ IMPORTANT:
 Inside the .mdat file that corresponds to the "path to scenario" there is a line where "path1300" is specified: this path should be modified manually inside the desired .mdat file before running the script assas_sampling.py. The "path1300" should be such that the generated .mdat files (so not the one modified manually) can reach the file "trans.dat". If this does not happen, the ASTEC code will not work.
 
 The file .test is created in the directory specified by confing_data["path to ASTEC input"]. This file allows for the serial computation of ASTEC.
-------------------------------------------------------------------------------------------------------------------------------------------------
+
 In general all the necessary things should be specified in the desired .mdat file (for instance the presence of a filter for variables) before running assas_sampling.py. All the correct paths should be given in .mdat file manually (there is not a standard way as each partner could decide to organize their directories as they want).
