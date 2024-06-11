@@ -6,8 +6,8 @@ from pyDOE import lhs
 
 #dictionary with necessary specifications is given
 config_data = {
-"path to scenario": "SBO_fb_1300_LIKE_SIMPLIFIED_ASSAS.mdat",
-"name of scenario file": "SBO_fb_1300_LIKE_SIMPLIFIED_ASSAS.mdat",
+"path to scenario": "scenarios/SBO_fb_1300_LIKE_SIMPLIFIED_ASSAS.mdat",
+"name of scenario file": "SBO_fb_1300_LIKE_SIMPLIFIED_ASSAS.mdat", #this is the name of the .mdat file, not the path
 "path to ASTEC input": "inputs_directory/",
 "sampling algorithm": "LHS",
 "number of samples": 20,
