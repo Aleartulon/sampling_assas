@@ -7,17 +7,17 @@ from pyDOE import lhs
 #dictionary with necessary specifications is given
 config_data = {
 "path to scenario": "SBO_fb_1300_LIKE_SIMPLIFIED_ASSAS.mdat",
+"name of scenario file": "SBO_fb_1300_LIKE_SIMPLIFIED_ASSAS.mdat",
 "path to ASTEC input": "inputs_directory/",
 "sampling algorithm": "LHS",
 "number of samples": 20,
 "uncertain input parameters": [
-{"name": "tpesp", "distribution": "uniform", "min": 13000.0, "max": 20000.0},
+{"name": "tpesp", "distribution": "uniform", "min": 13000.0, "max": 20000.0}, #list of operator actions to be sampled
 {"name": "t_fbseb", "distribution": "uniform", "min": 12040.0, "max": 20050.0}
-
 ],
 "certain input parameters": [
-    {"name": "tpessg", "value" : 20000.}
-]
+    {"name": "tpessg", "value" : 20000.} #list of operator actions to be kept fixed. If no operator actions are to be fixed then
+]                                        #the list should be kept empty.
 }
 
 
@@ -69,3 +69,10 @@ for sample_i in range(samples_num):
     for param in range(uncertain_parameters_num + certain_parameters_num):
         create_driving_ana_file(config_data, sampled_matrix[sample_i], config_data["path to ASTEC input"] + "/Sample_"+str(sample_i))
     
+#create the .test file which allows for serial computation of ASTEC
+
+with open(config_data["path to ASTEC input"]+"/test.test", 'w') as file:
+    
+    name_file = config_data["name of scenario file"]
+    for i in range(samples_num):
+        file.write(f"Sample_{i}/{name_file};Sample_{i}\n")
